@@ -1,0 +1,36 @@
+/* src/styles/roles.css
+   React-Bootstrap solo conoce primary/success/danger/etc.
+   Aquí definimos la variante "admin" (morado corporativo) para que
+   <Navbar bg="admin">, <Button variant="admin"> y <Badge bg="admin"> funcionen. */
+:root {
+  --sportclub-admin: #2e1a47;
+  --sportclub-admin-hover: #3d2560;
+  --sportclub-gold: #f2b705;
+}
+
+/* Navbar bg="admin" -> clase .bg-admin ; Badge bg="admin" -> .bg-admin */
+.bg-admin {
+  background-color: var(--sportclub-admin) !important;
+}
+
+.text-admin {
+  color: var(--sportclub-admin) !important;
+}
+
+.border-admin {
+  border-color: var(--sportclub-admin) !important;
+}
+
+/* Button variant="admin" -> React-Bootstrap genera la clase .btn-admin */
+.btn-admin {
+  background-color: var(--sportclub-admin);
+  border-color: var(--sportclub-admin);
+  color: #fff;
+}
+
+.btn-admin:hover,
+.btn-admin:focus {
+  background-color: var(--sportclub-admin-hover);
+  border-color: var(--sportclub-admin-hover);
+  color: #fff;
+}
