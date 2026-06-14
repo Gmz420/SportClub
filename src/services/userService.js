@@ -4,8 +4,10 @@ import { authHeaders } from "./authService" // ← misma clave de token que la s
 
 const USERS_PATH = "/api/users"
 
-export async function getUsers() {
-  const res = await fetch(apiUrl(USERS_PATH), { headers: authHeaders() })
+// role opcional: filtra por rol (ej. "user" para que un coach vea solo alumnos).
+export async function getUsers(role) {
+  const query = role ? `?role=${encodeURIComponent(role)}` : ""
+  const res = await fetch(apiUrl(`${USERS_PATH}${query}`), { headers: authHeaders() })
   const body = await res.json()
   if (!res.ok || !body.ok) {
     throw new Error(body.message || "Error al obtener usuarios")
