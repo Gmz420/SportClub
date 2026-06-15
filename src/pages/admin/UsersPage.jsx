@@ -6,12 +6,15 @@ import RoleBadge from "../../components/ui/RoleBadge"
 import UserFormModal from "../../components/users/UserFormModal"
 import { getUser } from "../../services/authService"
 import { createUser, deleteUser, getUsers, updateUser } from "../../services/userService"
+import { notifyError } from "../../utils/notify"
 
 function UsersPage() {
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false)
   const [selectedUser, setSelectedUser] = useState(null)
+  // Cambia en cada apertura para remontar el modal con datos frescos (ver UserFormModal).
+  const [modalKey, setModalKey] = useState(0)
 
   const currentUser = getUser()
 
@@ -21,23 +24,35 @@ function UsersPage() {
       const data = await getUsers()
       setUsers(data)
     } catch (error) {
-      Swal.fire("Error", error.message, "error")
+      notifyError(error, "No se pudieron cargar los usuarios")
     } finally {
       setLoading(false)
     }
   }
 
+  // Carga inicial: el estado parte en loading=true y los setState ocurren dentro
+  // de callbacks async (no en el cuerpo del effect), por lo que no dispara renders
+  // en cascada. El flag `active` evita actualizar estado si el componente se desmonta.
   useEffect(() => {
-    loadUsers()
+    let active = true
+    getUsers()
+      .then((data) => active && setUsers(data))
+      .catch((error) => notifyError(error, "No se pudieron cargar los usuarios"))
+      .finally(() => active && setLoading(false))
+    return () => {
+      active = false
+    }
   }, [])
 
   const openCreateModal = () => {
     setSelectedUser(null)
+    setModalKey((k) => k + 1)
     setShowModal(true)
   }
 
   const openEditModal = (user) => {
     setSelectedUser(user)
+    setModalKey((k) => k + 1)
     setShowModal(true)
   }
 
@@ -58,7 +73,7 @@ function UsersPage() {
       closeModal()
       loadUsers()
     } catch (error) {
-      Swal.fire("Error", error.message, "error")
+      notifyError(error, "No se pudo guardar el usuario")
     }
   }
 
@@ -80,7 +95,7 @@ function UsersPage() {
       Swal.fire("Eliminado", "Usuario eliminado correctamente.", "success")
       loadUsers()
     } catch (error) {
-      Swal.fire("Error", error.message, "error")
+      notifyError(error, "No se pudo eliminar el usuario")
     }
   }
 
@@ -146,7 +161,13 @@ function UsersPage() {
         </Card.Body>
       </Card>
 
-      <UserFormModal show={showModal} handleClose={closeModal} handleSave={handleSave} selectedUser={selectedUser} />
+      <UserFormModal
+        key={modalKey}
+        show={showModal}
+        handleClose={closeModal}
+        handleSave={handleSave}
+        selectedUser={selectedUser}
+      />
     </Container>
   )
 }

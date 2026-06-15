@@ -4,6 +4,7 @@ import { Button, Card, Col, Container, Row, Table } from "react-bootstrap"
 import { Link } from "react-router-dom"
 import Swal from "sweetalert2"
 import { getUsers } from "../../services/userService"
+import { notifyError } from "../../utils/notify"
 
 function AdminDashboard() {
   const [users, setUsers] = useState([])
@@ -12,7 +13,7 @@ function AdminDashboard() {
   useEffect(() => {
     getUsers()
       .then(setUsers)
-      .catch((error) => Swal.fire("Error", error.message, "error"))
+      .catch((error) => notifyError(error, "No se pudieron cargar los datos"))
       .finally(() => setLoading(false))
   }, [])
 

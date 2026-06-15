@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom"
 import { Button, Card, Form, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import { registerUser } from "../services/authService"
+import { notifyError } from "../utils/notify"
 import logo from "../assets/sportclub-logo.png"
 
 function Register() {
@@ -76,7 +77,7 @@ function Register() {
       })
       navigate("/login")
     } catch (error) {
-      Swal.fire("Error al registrarse", error.message, "error")
+      notifyError(error, "No se pudo crear la cuenta")
     } finally {
       setLoading(false)
     }
@@ -96,7 +97,6 @@ function Register() {
       <div className="auth-brand">
         <img src={logo} alt="Logo SportClub" className="auth-brand-logo" />
         <h2>Únete a SportClub</h2>
-        <div className="auth-brand-bar" />
         <p>Crea tu cuenta y empieza a entrenar con nosotros hoy mismo.</p>
       </div>
 
@@ -174,7 +174,8 @@ function Register() {
                   placeholder="Repite tu contraseña"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  isInvalid={validatedStep1 && !passwordsMatch}
+                  isInvalid={confirmPassword.length > 0 && !passwordsMatch}
+                  isValid={confirmPassword.length > 0 && passwordsMatch}
                 />
                 <Form.Control.Feedback type="invalid">
                   Las contraseñas no coinciden.

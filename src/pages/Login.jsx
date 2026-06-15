@@ -2,8 +2,8 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { Button, Card, Form, Spinner } from "react-bootstrap"
-import Swal from "sweetalert2"
 import { loginUser, saveSession } from "../services/authService"
+import { notifyError } from "../utils/notify"
 import logo from "../assets/sportclub-logo.png"
 
 function Login() {
@@ -37,7 +37,7 @@ function Login() {
         navigate("/user/dashboard")
       }
     } catch (error) {
-      Swal.fire("Error al iniciar sesión", error.message, "error")
+      notifyError(error, "No se pudo iniciar sesión")
     } finally {
       setLoading(false)
     }
@@ -48,7 +48,6 @@ function Login() {
       <div className="auth-brand">
         <img src={logo} alt="Logo SportClub" className="auth-brand-logo" />
         <h2>Tu club, tu progreso</h2>
-        <div className="auth-brand-bar" />
         <p>Entrena, reserva tus clases y sigue tu avance en un solo lugar.</p>
       </div>
 
