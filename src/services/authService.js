@@ -51,15 +51,20 @@ export async function loginUser({ email, password }) {
 }
 
 // Registro público (el backend asigna rol "user").
-export async function registerUser({ full_name, email, password }) {
+// birth_date y metadata son opcionales (Paso 2 del registro).
+export async function registerUser({ full_name, email, password, birth_date, metadata }) {
   const res = await fetch(apiUrl("/api/auth/register"), {
     method: "POST",
     headers: jsonHeaders(),
-    body: JSON.stringify({ full_name, email, password }),
+    body: JSON.stringify({ full_name, email, password, birth_date, metadata }),
   })
   const body = await res.json()
   if (!res.ok || !body.ok) {
-    throw new Error(body.message || "No se pudo registrar")
+    // El backend responde "Payload inválido." junto con un detalle por campo
+    // en body.errors (ej: { email: "El correo no tiene un formato válido." }).
+    // Mostramos ese detalle para que el usuario sepa qué corregir.
+    const detail = body.errors ? Object.values(body.errors).flat().join(" ") : ""
+    throw new Error(detail || body.message || "No se pudo registrar")
   }
   return body.data
 }

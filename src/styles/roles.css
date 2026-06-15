@@ -34,3 +34,18 @@
   border-color: var(--sportclub-admin-hover);
   color: #fff;
 }
+
+/* Resalte temporal al navegar desde el navbar a una sección del dashboard
+   (#clases, #reservas, #progreso, etc. -> useScrollToHash). */
+.section-highlight > .card {
+  animation: section-highlight-pulse 1.2s ease-out;
+}
+
+@keyframes section-highlight-pulse {
+  0% {
+    box-shadow: 0 0 0 4px var(--sportclub-gold);
+  }
+  100% {
+    box-shadow: 0 0 0 4px transparent;
+  }
+}
