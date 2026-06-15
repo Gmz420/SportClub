@@ -38,14 +38,17 @@
 /* Resalte temporal al navegar desde el navbar a una sección del dashboard
    (#clases, #reservas, #progreso, etc. -> useScrollToHash). */
 .section-highlight > .card {
-  animation: section-highlight-pulse 1.2s ease-out;
+  animation: section-highlight-pulse 1.5s ease-out;
 }
 
 @keyframes section-highlight-pulse {
   0% {
-    box-shadow: 0 0 0 4px var(--sportclub-gold);
+    box-shadow: 0 0 0 3px var(--sportclub-gold), 0 0 22px 5px rgba(242, 183, 5, 0.5);
+  }
+  60% {
+    box-shadow: 0 0 0 3px var(--sportclub-gold), 0 0 22px 5px rgba(242, 183, 5, 0.2);
   }
   100% {
-    box-shadow: 0 0 0 4px transparent;
+    box-shadow: 0 0 0 0 transparent;
   }
 }

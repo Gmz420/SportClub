@@ -1,7 +1,7 @@
 // src/pages/Login.jsx
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Button, Card, Container, Form, Spinner } from "react-bootstrap"
+import { Button, Card, Form, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import { loginUser, saveSession } from "../services/authService"
 import logo from "../assets/sportclub-logo.png"
@@ -44,19 +44,23 @@ function Login() {
   }
 
   return (
-    <Container
-      className="auth-screen d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <Card style={{ width: "24rem" }} className="auth-card shadow">
-        <Card.Body>
-          <img src={logo} alt="Logo SportClub" className="auth-logo" />
-          <Card.Title className="text-center text-admin mb-1">Iniciar sesión en SportClub</Card.Title>
-          <p className="text-center text-muted small mb-4">
-            Bienvenido de vuelta a tu entrenamiento
-          </p>
+    <div className="auth-split">
+      <div className="auth-brand">
+        <img src={logo} alt="Logo SportClub" className="auth-brand-logo" />
+        <h2>Tu club, tu progreso</h2>
+        <div className="auth-brand-bar" />
+        <p>Entrena, reserva tus clases y sigue tu avance en un solo lugar.</p>
+      </div>
 
-          <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <div className="auth-form-side">
+        <Card className="auth-card shadow-sm">
+          <Card.Body>
+            <Card.Title className="text-center text-admin mb-1">Iniciar sesión</Card.Title>
+            <p className="text-center text-muted small mb-4">
+              Bienvenido de vuelta a tu entrenamiento
+            </p>
+
+            <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group className="mb-3">
               <Form.Label>Correo</Form.Label>
               <Form.Control
@@ -95,14 +99,15 @@ function Login() {
                 "Ingresar"
               )}
             </Button>
-          </Form>
+            </Form>
 
-          <div className="text-center mt-3">
-            ¿No tienes cuenta? <Link to="/register">Regístrate</Link>
-          </div>
-        </Card.Body>
-      </Card>
-    </Container>
+            <div className="text-center mt-3">
+              ¿No tienes cuenta? <Link to="/register">Regístrate</Link>
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
+    </div>
   )
 }
 

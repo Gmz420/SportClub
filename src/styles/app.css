@@ -1,0 +1,52 @@
+/* src/styles/app.css
+   Identidad de marca para la app interna (dashboards / perfil), coherente con
+   el rediseño de Login/Register (auth.css): fondo suave, cards con acento
+   dorado y avatares con el color del rol. El color de marca (dorado) es común;
+   la diferenciación por rol sigue en el navbar y en títulos/avatares. */
+
+body {
+  background-color: #f4f5f7;
+}
+
+/* Título de cada página interna (el color de marca lo aplica cada página
+   con text-primary/text-success/text-admin según el rol). */
+.app-page-title {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+/* Anclas de sección del navbar: dejan aire bajo el navbar fijo al saltar a ellas. */
+[id="clases"],
+[id="reservas"],
+[id="progreso"],
+[id="alumnos"],
+[id="horario"],
+[id="reportes"],
+[id="estadisticas"],
+[id="configuracion"] {
+  scroll-margin-top: 84px;
+}
+
+/* Card de marca: borde superior dorado + sombra suave (mismo lenguaje que auth-card). */
+.app-card {
+  border: none;
+  border-radius: 12px;
+  border-top: 4px solid var(--sportclub-gold);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.app-card .card-title {
+  font-weight: 600;
+}
+
+/* Avatar circular con iniciales; el color lo da la variante del rol (.bg-*). */
+.app-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  line-height: 1;
+}

@@ -86,9 +86,9 @@ function UsersPage() {
 
   return (
     <Container className="mt-4">
-      <h1>Gestión de Usuarios</h1>
+      <h1 className="app-page-title text-admin">Gestión de Usuarios</h1>
 
-      <Card className="mt-3">
+      <Card className="app-card mt-3">
         <Card.Body>
           <div className="d-flex justify-content-between align-items-center mb-3">
             <Card.Title className="mb-0">Usuarios del Sistema</Card.Title>

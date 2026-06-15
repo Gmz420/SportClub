@@ -1,23 +1,115 @@
 /* src/styles/auth.css
-   Identidad de marca para Login/Register: morado + dorado (ver roles.css),
-   activando --sportclub-gold (definido pero sin uso hasta ahora). */
+   Login/Register estilo "split" (Opción B aprobada): panel lateral morado con
+   la marca a la izquierda + formulario a la derecha. Recupera del mockup los
+   detalles que se habían perdido: labels en morado y foco morado en los inputs.
+   Usa --sportclub-admin (morado) y --sportclub-gold (dorado) de roles.css. */
 
-.auth-screen {
+/* ---------- Layout split ---------- */
+.auth-split {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Panel de marca (izquierda) */
+.auth-brand {
+  flex: 1;
+  background: linear-gradient(150deg, var(--sportclub-admin) 0%, #3d2560 70%, #5a3a8a 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Glow dorado decorativo en la esquina */
+.auth-brand::after {
+  content: "";
+  position: absolute;
+  bottom: -60px;
+  right: -60px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(242, 183, 5, 0.22), transparent 70%);
+}
+
+.auth-brand-logo {
+  height: 88px;
+  margin-bottom: 22px;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+}
+
+.auth-brand h2 {
+  font-size: 1.6rem;
+  margin: 0 0 8px;
+}
+
+.auth-brand-bar {
+  width: 60px;
+  height: 4px;
+  background-color: var(--sportclub-gold);
+  border-radius: 2px;
+  margin: 18px 0;
+}
+
+.auth-brand p {
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 300px;
+  margin: 0;
+}
+
+/* Lado del formulario (derecha) */
+.auth-form-side {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
   background-color: #f8f9fa;
 }
 
+/* ---------- Card del formulario ---------- */
 .auth-card {
   border: none;
-  border-top: 6px solid var(--sportclub-gold);
   border-radius: 12px;
+  width: 100%;
+  max-width: 26rem;
 }
 
-.auth-logo {
-  display: block;
-  height: 56px;
-  margin: 0 auto 16px auto;
+/* Detalles de marca recuperados del mockup: labels morados + foco morado */
+.auth-card .form-label {
+  color: var(--sportclub-admin);
+  font-weight: 600;
 }
 
+.auth-card .form-control:focus,
+.auth-card .form-select:focus {
+  border-color: var(--sportclub-admin);
+  box-shadow: 0 0 0 0.2rem rgba(46, 26, 71, 0.15);
+}
+
+/* Responsivo: en pantallas pequeñas el panel de marca pasa arriba y se apila */
+@media (max-width: 768px) {
+  .auth-split {
+    flex-direction: column;
+  }
+  .auth-brand {
+    padding: 32px 20px;
+  }
+  .auth-brand-logo {
+    height: 64px;
+    margin-bottom: 14px;
+  }
+  .auth-brand p {
+    display: none;
+  }
+}
+
+/* ---------- Botones ---------- */
 /* Button variant="gold" -> React-Bootstrap genera la clase .btn-gold */
 .btn-gold {
   background-color: var(--sportclub-gold);
@@ -34,7 +126,7 @@
   color: var(--sportclub-admin);
 }
 
-/* Button variant="outline-admin" -> React-Bootstrap genera .btn-outline-admin */
+/* Button variant="outline-admin" -> .btn-outline-admin */
 .btn-outline-admin {
   background-color: transparent;
   border: 2px solid var(--sportclub-admin);
@@ -50,7 +142,7 @@
   color: #fff;
 }
 
-/* Indicador de pasos (Registro) */
+/* ---------- Indicador de pasos (Registro) ---------- */
 .auth-step-indicator {
   display: flex;
   justify-content: center;
@@ -84,7 +176,7 @@
   background-color: #e0e0e0;
 }
 
-/* Transición animada entre pasos del Registro */
+/* ---------- Transición animada entre pasos del Registro ---------- */
 .auth-steps {
   position: relative;
 }
