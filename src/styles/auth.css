@@ -1,0 +1,119 @@
+/* src/styles/auth.css
+   Identidad de marca para Login/Register: morado + dorado (ver roles.css),
+   activando --sportclub-gold (definido pero sin uso hasta ahora). */
+
+.auth-screen {
+  background-color: #f8f9fa;
+}
+
+.auth-card {
+  border: none;
+  border-top: 6px solid var(--sportclub-gold);
+  border-radius: 12px;
+}
+
+.auth-logo {
+  display: block;
+  height: 56px;
+  margin: 0 auto 16px auto;
+}
+
+/* Button variant="gold" -> React-Bootstrap genera la clase .btn-gold */
+.btn-gold {
+  background-color: var(--sportclub-gold);
+  border-color: var(--sportclub-gold);
+  color: var(--sportclub-admin);
+  border-radius: 50px;
+  font-weight: 600;
+}
+
+.btn-gold:hover,
+.btn-gold:focus {
+  background-color: #d19f04;
+  border-color: #d19f04;
+  color: var(--sportclub-admin);
+}
+
+/* Button variant="outline-admin" -> React-Bootstrap genera .btn-outline-admin */
+.btn-outline-admin {
+  background-color: transparent;
+  border: 2px solid var(--sportclub-admin);
+  color: var(--sportclub-admin);
+  border-radius: 50px;
+  font-weight: 600;
+}
+
+.btn-outline-admin:hover,
+.btn-outline-admin:focus {
+  background-color: var(--sportclub-admin);
+  border-color: var(--sportclub-admin);
+  color: #fff;
+}
+
+/* Indicador de pasos (Registro) */
+.auth-step-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.auth-step-indicator .dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background-color: #e0e0e0;
+  color: #999;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.auth-step-indicator .dot--active {
+  background-color: var(--sportclub-gold);
+  color: var(--sportclub-admin);
+}
+
+.auth-step-indicator .line {
+  width: 40px;
+  height: 2px;
+  background-color: #e0e0e0;
+}
+
+/* Transición animada entre pasos del Registro */
+.auth-steps {
+  position: relative;
+}
+
+.auth-step {
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.auth-step--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.auth-step--hidden-up {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transform: translateY(-25px);
+  pointer-events: none;
+}
+
+.auth-step--hidden-down {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  opacity: 0;
+  transform: translateY(25px);
+  pointer-events: none;
+}
