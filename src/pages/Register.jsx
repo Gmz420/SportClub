@@ -1,7 +1,7 @@
 // src/pages/Register.jsx
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { Button, Card, Container, Form, Spinner } from "react-bootstrap"
+import { Button, Card, Form, Spinner } from "react-bootstrap"
 import Swal from "sweetalert2"
 import { registerUser } from "../services/authService"
 import logo from "../assets/sportclub-logo.png"
@@ -92,15 +92,18 @@ function Register() {
   }
 
   return (
-    <Container
-      className="auth-screen d-flex justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <Card style={{ width: "26rem" }} className="auth-card shadow">
-        <Card.Body>
-          <img src={logo} alt="Logo SportClub" className="auth-logo" />
+    <div className="auth-split">
+      <div className="auth-brand">
+        <img src={logo} alt="Logo SportClub" className="auth-brand-logo" />
+        <h2>Únete a SportClub</h2>
+        <div className="auth-brand-bar" />
+        <p>Crea tu cuenta y empieza a entrenar con nosotros hoy mismo.</p>
+      </div>
 
-          <div className="auth-step-indicator">
+      <div className="auth-form-side">
+        <Card className="auth-card shadow-sm">
+          <Card.Body>
+            <div className="auth-step-indicator">
             <div className={`dot ${step === 1 ? "dot--active" : ""}`}>1</div>
             <div className="line" />
             <div className={`dot ${step === 2 ? "dot--active" : ""}`}>2</div>
@@ -280,10 +283,11 @@ function Register() {
                 Volver
               </Button>
             </Form>
-          </div>
-        </Card.Body>
-      </Card>
-    </Container>
+            </div>
+          </Card.Body>
+        </Card>
+      </div>
+    </div>
   )
 }
 

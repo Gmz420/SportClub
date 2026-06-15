@@ -4,6 +4,8 @@ import { Button, Card, Col, Container, Form, Row, Spinner } from "react-bootstra
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import RoleBadge from "../components/ui/RoleBadge"
+import Avatar from "../components/ui/Avatar"
+import { getRoleColors } from "../constants/roleColors"
 import { changePassword, getProfile, getToken, getUser, saveSession, updateProfile } from "../services/authService"
 
 function Profile() {
@@ -100,13 +102,16 @@ function Profile() {
         Volver al Dashboard
       </Button>
 
-      <h1 className="d-flex align-items-center gap-2">
-        Mi Perfil <RoleBadge role={profile?.role} />
-      </h1>
+      <div className="d-flex align-items-center gap-3 mb-2">
+        <Avatar name={profile?.full_name} variant={getRoleColors(profile?.role).variant} size={56} />
+        <h1 className="app-page-title d-flex align-items-center gap-2 mb-0">
+          Mi Perfil <RoleBadge role={profile?.role} />
+        </h1>
+      </div>
 
       <Row className="mt-3 g-3">
         <Col md={6}>
-          <Card>
+          <Card className="app-card h-100">
             <Card.Body>
               <Card.Title>Datos Personales</Card.Title>
               <Form noValidate validated={profileValidated} onSubmit={handleProfileSubmit}>
@@ -144,7 +149,7 @@ function Profile() {
         </Col>
 
         <Col md={6}>
-          <Card>
+          <Card className="app-card h-100">
             <Card.Body>
               <Card.Title>Cambiar Contraseña</Card.Title>
               <Form noValidate validated={passwordValidated} onSubmit={handlePasswordSubmit}>

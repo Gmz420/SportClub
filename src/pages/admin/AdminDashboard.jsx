@@ -37,11 +37,11 @@ function AdminDashboard() {
 
   return (
     <Container className="mt-4">
-      <h1>Panel de Administración</h1>
+      <h1 className="app-page-title text-admin">Panel de Administración</h1>
 
       <Row className="mt-3 g-3">
         <Col md={4}>
-          <Card>
+          <Card className="app-card h-100">
             <Card.Body>
               <Card.Title>Gestión de Usuarios</Card.Title>
               <p>Crea, edita y elimina usuarios del sistema.</p>
@@ -53,13 +53,13 @@ function AdminDashboard() {
         </Col>
 
         <Col md={4} id="estadisticas">
-          <Card>
+          <Card className="app-card h-100">
             <Card.Body>
               <Card.Title>Estadísticas del Sistema</Card.Title>
               {loading ? (
                 <p className="mb-0">Cargando...</p>
               ) : (
-                <Table size="sm" responsive>
+                <Table size="sm" responsive className="mb-0">
                   <tbody>
                     <tr>
                       <td>Total de usuarios</td>
@@ -85,7 +85,7 @@ function AdminDashboard() {
         </Col>
 
         <Col md={4} id="configuracion">
-          <Card>
+          <Card className="app-card h-100">
             <Card.Body>
               <Card.Title>Reportes Generales</Card.Title>
               <p>Exporta el listado completo de usuarios.</p>

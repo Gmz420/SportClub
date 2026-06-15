@@ -1,5 +1,5 @@
 // src/components/ui/RoleNavbar.jsx
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button, Container, Nav, Navbar } from "react-bootstrap"
 import logo from "../../assets/sportclub-logo.png"
 import { getRoleColors } from "../../constants/roleColors"
@@ -32,9 +32,13 @@ const NAV_ITEMS = {
 
 function RoleNavbar({ role }) {
   const navigate = useNavigate()
+  const location = useLocation()
   const user = getUser()
   const { bg } = getRoleColors(role)
   const items = NAV_ITEMS[role] ?? []
+
+  // La pestaña activa = ruta + hash actuales (ej. "/user/dashboard#clases").
+  const currentPath = location.pathname + location.hash
 
   const handleLogout = () => {
     logout()
@@ -42,7 +46,7 @@ function RoleNavbar({ role }) {
   }
 
   return (
-    <Navbar bg={bg} variant="dark" expand="lg" className="px-3">
+    <Navbar bg={bg} variant="dark" expand="lg" sticky="top" className="px-3">
       <Container fluid>
         <Navbar.Brand
           as={Link}
@@ -57,7 +61,12 @@ function RoleNavbar({ role }) {
         <Navbar.Collapse id={`navbar-${role}`}>
           <Nav className="me-auto">
             {items.map((item) => (
-              <Nav.Link key={item.label} as={Link} to={item.to}>
+              <Nav.Link
+                key={item.label}
+                as={Link}
+                to={item.to}
+                active={currentPath === item.to}
+              >
                 {item.label}
               </Nav.Link>
             ))}
