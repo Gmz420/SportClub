@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2"
 import RoleBadge from "../components/ui/RoleBadge"
 import Avatar from "../components/ui/Avatar"
+import RoleNavbar from "../components/ui/RoleNavbar"
 import { getRoleColors } from "../constants/roleColors"
+import { notifyError } from "../utils/notify"
 import { changePassword, getProfile, getToken, getUser, saveSession, updateProfile } from "../services/authService"
 
 function Profile() {
@@ -33,14 +35,17 @@ function Profile() {
         setEmail(data.email ?? "")
         setBirthDate(data.birth_date ?? "")
       })
-      .catch((error) => Swal.fire("Error", error.message, "error"))
+      .catch((error) => notifyError(error, "No se pudo cargar tu perfil"))
       .finally(() => setLoading(false))
   }, [])
+
+  // El backend recorta espacios antes de medir el largo (igual que en Register).
+  const fullNameValid = fullName.trim().length >= 3
 
   const handleProfileSubmit = async (event) => {
     event.preventDefault()
     const form = event.currentTarget
-    if (!form.checkValidity()) {
+    if (!form.checkValidity() || !fullNameValid) {
       event.stopPropagation()
       setProfileValidated(true)
       return
@@ -48,12 +53,12 @@ function Profile() {
     setProfileValidated(true)
     setSavingProfile(true)
     try {
-      const updated = await updateProfile({ full_name: fullName, email, birth_date: birthDate || null })
+      const updated = await updateProfile({ full_name: fullName.trim(), email, birth_date: birthDate || null })
       setProfile(updated)
       saveSession(getToken(), updated)
       Swal.fire("Perfil actualizado", "Tus datos se guardaron correctamente.", "success")
     } catch (error) {
-      Swal.fire("Error", error.message, "error")
+      notifyError(error, "No se pudieron guardar los cambios")
     } finally {
       setSavingProfile(false)
     }
@@ -82,34 +87,35 @@ function Profile() {
       setConfirmPassword("")
       setPasswordValidated(false)
     } catch (error) {
-      Swal.fire("Error", error.message, "error")
+      notifyError(error, "No se pudo cambiar la contraseña")
     } finally {
       setSavingPassword(false)
     }
   }
 
-  if (loading) {
-    return (
-      <Container className="mt-4 text-center">
-        <Spinner animation="border" />
-      </Container>
-    )
-  }
-
   return (
-    <Container className="mt-4">
-      <Button variant="outline-secondary" size="sm" className="mb-3" onClick={() => navigate(`/${profile?.role}/dashboard`)}>
-        Volver al Dashboard
-      </Button>
+    <>
+      <RoleNavbar role={profile?.role} />
 
-      <div className="d-flex align-items-center gap-3 mb-2">
-        <Avatar name={profile?.full_name} variant={getRoleColors(profile?.role).variant} size={56} />
-        <h1 className="app-page-title d-flex align-items-center gap-2 mb-0">
-          Mi Perfil <RoleBadge role={profile?.role} />
-        </h1>
-      </div>
+      <Container className="mt-4">
+        <Button variant="outline-secondary" size="sm" className="mb-3" onClick={() => navigate(`/${profile?.role}/dashboard`)}>
+          ← Volver al Dashboard
+        </Button>
 
-      <Row className="mt-3 g-3">
+        {loading ? (
+          <div className="text-center">
+            <Spinner animation="border" />
+          </div>
+        ) : (
+          <>
+            <div className="d-flex align-items-center gap-3 mb-2">
+              <Avatar name={profile?.full_name} variant={getRoleColors(profile?.role).variant} size={56} />
+              <h1 className="app-page-title d-flex align-items-center gap-2 mb-0">
+                Mi Perfil <RoleBadge role={profile?.role} />
+              </h1>
+            </div>
+
+            <Row className="mt-3 g-3">
         <Col md={6}>
           <Card className="app-card h-100">
             <Card.Body>
@@ -123,16 +129,25 @@ function Profile() {
                     onChange={(e) => setFullName(e.target.value)}
                     required
                     minLength={3}
+                    isInvalid={profileValidated && !fullNameValid}
                   />
                   <Form.Control.Feedback type="invalid">
-                    Ingresa un nombre válido (mínimo 3 caracteres).
+                    Ingresa un nombre válido (mínimo 3 caracteres, sin contar espacios).
                   </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>Correo electrónico</Form.Label>
-                  <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                  <Form.Control.Feedback type="invalid">Ingresa un correo válido.</Form.Control.Feedback>
+                  <Form.Control
+                    type="email"
+                    pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    Ingresa un correo válido con dominio (ej: nombre@correo.cl).
+                  </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="birthDate">
@@ -195,8 +210,11 @@ function Profile() {
             </Card.Body>
           </Card>
         </Col>
-      </Row>
-    </Container>
+            </Row>
+          </>
+        )}
+      </Container>
+    </>
   )
 }
 

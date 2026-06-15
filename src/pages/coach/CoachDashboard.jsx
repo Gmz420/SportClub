@@ -5,6 +5,7 @@ import Swal from "sweetalert2"
 import Avatar from "../../components/ui/Avatar"
 import { getUser } from "../../services/authService"
 import { getUsers } from "../../services/userService"
+import { notifyError } from "../../utils/notify"
 import { COACH_SCHEDULE } from "../../constants/mockData"
 
 function CoachDashboard() {
@@ -15,7 +16,7 @@ function CoachDashboard() {
   useEffect(() => {
     getUsers("user")
       .then(setStudents)
-      .catch((error) => Swal.fire("Error", error.message, "error"))
+      .catch((error) => notifyError(error, "No se pudieron cargar tus alumnos"))
       .finally(() => setLoading(false))
   }, [])
 

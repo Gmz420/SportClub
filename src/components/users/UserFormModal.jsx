@@ -1,5 +1,5 @@
 // src/components/users/UserFormModal.jsx
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Button, Form, Modal } from "react-bootstrap"
 
 const initialForm = {
@@ -10,24 +10,26 @@ const initialForm = {
   birth_date: "",
 }
 
+// El estado se inicializa desde selectedUser una sola vez. UsersPage remonta este
+// modal con una `key` distinta en cada apertura, así el formulario siempre arranca
+// con los datos correctos sin necesidad de un useEffect que sincronice props->estado.
+function buildInitialForm(selectedUser) {
+  if (!selectedUser) return initialForm
+  return {
+    full_name: selectedUser.full_name || "",
+    email: selectedUser.email || "",
+    password: "",
+    role: selectedUser.role || "user",
+    birth_date: selectedUser.birth_date || "",
+  }
+}
+
 function UserFormModal({ show, handleClose, handleSave, selectedUser }) {
-  const [formData, setFormData] = useState(initialForm)
+  const [formData, setFormData] = useState(() => buildInitialForm(selectedUser))
   const [validated, setValidated] = useState(false)
 
-  useEffect(() => {
-    if (selectedUser) {
-      setFormData({
-        full_name: selectedUser.full_name || "",
-        email: selectedUser.email || "",
-        password: "",
-        role: selectedUser.role || "user",
-        birth_date: selectedUser.birth_date || "",
-      })
-    } else {
-      setFormData(initialForm)
-    }
-    setValidated(false)
-  }, [selectedUser, show])
+  // El backend recorta espacios antes de medir el largo (igual que en Register).
+  const fullNameValid = formData.full_name.trim().length >= 3
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -37,7 +39,7 @@ function UserFormModal({ show, handleClose, handleSave, selectedUser }) {
   const onSubmit = (event) => {
     event.preventDefault()
     const form = event.currentTarget
-    if (!form.checkValidity()) {
+    if (!form.checkValidity() || !fullNameValid) {
       event.stopPropagation()
       setValidated(true)
       return
@@ -46,7 +48,7 @@ function UserFormModal({ show, handleClose, handleSave, selectedUser }) {
 
     // Al editar, contraseña vacía = no cambiarla (no se envía al backend).
     const { password, birth_date, ...rest } = formData
-    const payload = { ...rest, birth_date: birth_date || null }
+    const payload = { ...rest, full_name: rest.full_name.trim(), birth_date: birth_date || null }
     if (!selectedUser || password) {
       payload.password = password
     }
@@ -70,16 +72,26 @@ function UserFormModal({ show, handleClose, handleSave, selectedUser }) {
               onChange={handleChange}
               required
               minLength={3}
+              isInvalid={validated && !fullNameValid}
             />
             <Form.Control.Feedback type="invalid">
-              Ingresa un nombre válido (mínimo 3 caracteres).
+              Ingresa un nombre válido (mínimo 3 caracteres, sin contar espacios).
             </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formEmail">
             <Form.Label>Correo electrónico</Form.Label>
-            <Form.Control type="email" name="email" value={formData.email} onChange={handleChange} required />
-            <Form.Control.Feedback type="invalid">Ingresa un correo válido.</Form.Control.Feedback>
+            <Form.Control
+              type="email"
+              name="email"
+              pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <Form.Control.Feedback type="invalid">
+              Ingresa un correo válido con dominio (ej: nombre@correo.cl).
+            </Form.Control.Feedback>
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formPassword">

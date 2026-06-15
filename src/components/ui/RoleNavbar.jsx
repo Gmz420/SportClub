@@ -1,10 +1,18 @@
 // src/components/ui/RoleNavbar.jsx
+import { useEffect } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { Button, Container, Nav, Navbar } from "react-bootstrap"
 import logo from "../../assets/sportclub-logo.png"
 import { getRoleColors } from "../../constants/roleColors"
 import { getUser, logout } from "../../services/authService"
+import { scrollToSection } from "../../utils/scrollToSection"
 import RoleBadge from "./RoleBadge"
+
+// Extrae el id de sección de un destino con ancla (".../dashboard#clases" -> "clases").
+function sectionIdFrom(to) {
+  const i = to.indexOf("#")
+  return i >= 0 ? to.slice(i + 1) : null
+}
 
 // Ítems de navegación por rol, definidos en Diseno_Visual_SportClub.md.
 // Los anchors (#clases, #estadisticas, etc.) apuntan a secciones del propio
@@ -37,12 +45,26 @@ function RoleNavbar({ role }) {
   const { bg } = getRoleColors(role)
   const items = NAV_ITEMS[role] ?? []
 
-  // La pestaña activa = ruta + hash actuales (ej. "/user/dashboard#clases").
+  // La sección activa = ruta + hash actuales (ej. "/user/dashboard#clases").
   const currentPath = location.pathname + location.hash
+
+  // Carga directa o recarga con un hash en la URL: resaltar esa sección al montar.
+  useEffect(() => {
+    if (location.hash) scrollToSection(location.hash.slice(1))
+    // solo al montar: los clics posteriores los maneja handleNavClick
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleLogout = () => {
     logout()
     navigate("/login")
+  }
+
+  // En cada clic de un ítem con ancla, resalta su sección — funciona también al
+  // clicar el mismo enlace dos veces (el hash no cambia, pero el resalte se repite).
+  const handleNavClick = (to) => {
+    const id = sectionIdFrom(to)
+    if (id) scrollToSection(id)
   }
 
   return (
@@ -66,6 +88,7 @@ function RoleNavbar({ role }) {
                 as={Link}
                 to={item.to}
                 active={currentPath === item.to}
+                onClick={() => handleNavClick(item.to)}
               >
                 {item.label}
               </Nav.Link>
@@ -77,7 +100,7 @@ function RoleNavbar({ role }) {
               {user?.full_name} <RoleBadge role={role} />
             </span>
             <Nav.Link as={Link} to="/profile">
-              Editar Perfil
+              Mi Perfil
             </Nav.Link>
             <Button variant="outline-light" size="sm" onClick={handleLogout}>
               Cerrar Sesión

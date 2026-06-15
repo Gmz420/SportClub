@@ -36,7 +36,7 @@
 }
 
 /* Resalte temporal al navegar desde el navbar a una sección del dashboard
-   (#clases, #reservas, #progreso, etc. -> useScrollToHash). */
+   (#clases, #reservas, #progreso, etc. -> utils/scrollToSection.js). */
 .section-highlight > .card {
   animation: section-highlight-pulse 1.5s ease-out;
 }
